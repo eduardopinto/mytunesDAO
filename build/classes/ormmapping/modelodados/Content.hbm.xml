@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+Licensee: 
+License Type: Evaluation
+-->
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="modelodados.Content" table="Content" lazy="false" discriminator-value="Content">
+		<id name="ID" column="ID" type="integer" unsaved-value="0">
+			<generator class="increment">
+			</generator>
+		</id>
+		<discriminator column="Discriminator" type="string"/>
+		<property name="publisher" column="Publisher" type="string" length="255" not-null="false" lazy="false"/>
+		<property name="title" column="Title" type="string" length="255" not-null="false" lazy="false"/>
+		<property name="price" column="Price" type="float" not-null="true" lazy="false"/>
+		<set name="users" table="User_Content" lazy="true" cascade="save-update,lock" inverse="true">
+			<key column="ContentID" not-null="true"/>
+			<many-to-many column="UserID" class="modelodados.User">
+			</many-to-many>
+		</set>
+		<subclass name="modelodados.Video" discriminator-value="Video" lazy="false">
+			<join table="Video">
+				<key>
+					<column name="ContentID"/>
+				</key>
+				<property name="resolution" column="Resolution" type="string" length="255" not-null="false" lazy="false"/>
+			</join>
+		</subclass>
+		<subclass name="modelodados.Music" discriminator-value="Music" lazy="false">
+			<join table="Music">
+				<key>
+					<column name="ContentID"/>
+				</key>
+				<property name="duration" column="Duration" type="integer" length="11" not-null="true" lazy="false"/>
+			</join>
+		</subclass>
+		<subclass name="modelodados.App" discriminator-value="App" lazy="false">
+			<join table="App">
+				<key>
+					<column name="ContentID"/>
+				</key>
+				<property name="details" column="Details" type="string" length="255" not-null="false" lazy="false"/>
+			</join>
+		</subclass>
+	</class>
+</hibernate-mapping>
